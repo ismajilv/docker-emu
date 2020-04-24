@@ -1,0 +1,3 @@
+./qemu-system-xtensa/qemu-system-xtensa -nographic -machine esp32 -drive file=flash_image.bin,if=mtd,format=raw -echr 0x02 -serial tcp::5555,server -nic user,model=open_eth
+
+idf.py monitor -p socket://localhost:5555
