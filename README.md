@@ -1,13 +1,13 @@
 
 # docker-emu
-This docker image runs QEMU system emulation for Raspbian Stretch Lite and ESP32. MQTT broker is installed on Raspbian and mqtt client on esp32 connects to this broker and send/recieve data. esp-idf compiled `flash_image.bin` and `raspbian` qcow2 image are persented in download link in [scripts](./scripts/raspberry_and_esp32.sh) / also [dropbox link](https://www.dropbox.com/sh/e71mzurg42qnrha/AACb_gYygq7fKqhUJ-RFMdEHa?dl=1/). This [script](./scripts/raspberry_and_esp32.sh) also configure Docker.
+This docker image runs QEMU system emulation for Raspbian Stretch Lite and ESP32. [build](./build) folder contains necessary scripts to configure emulator.  
 
-Source code for built `raspbian` qcow2 image (raspberry) and `flash_image.bin` file (esp32):
-- [esp-mqtt-tcp](./esp-mqtt-tcp)
-- [raspbian](./raspberry)
+[virt-customize](http://libguestfs.org/virt-customize.1.html) is used to configure `raspbian` image before docker run.
+
+Use [examples](./examples) folder for given examples and more info. 
 
 Pre-requirements:
-- [esp-idf](https://github.com/espressif/esp-idf) with release/v4.2, installation guide is presented in github, don't forget to update environment variables
+- [esp-idf](https://github.com/espressif/esp-idf) with release/v4.2
 
 ## Instruction
 
@@ -23,10 +23,12 @@ Will download/resize/enable ssh in `raspbian` qcow2 image and download esp32 `fl
 $ docker build -t docker-emu:mqtt .
 ```
 
-### Start docker with
-It starts docker and waits for connection on both 5555 and 6666 ports
+### Start docker with [examples](./examples) folder mounted
+Choose example [examples](./examples) you wish, as an example [mqtt](./examples/mqtt), then start docker. Wait it initiate start until it asks for connection on port.  
+- `5555` - for esp32 serial output
+- `6666` - for raspberry pi serial output 
 ```
-$ sudo docker run -it -p 2222:2222 -p 5555:5555 -p 6666:6666 --privileged docker-emu:mqtt
+$ sudo docker run -it -v $(pwd)/examples/mqtt:/root/mount -p 2222:2222 -p 5555:5555 -p 6666:6666 --privileged ismajilv/docker-emu:mqtt
 ```
 
 ### Connect to raspberry pi serial output on port 6666
@@ -34,13 +36,15 @@ on new terminal run:
 ```
 $ nc localhost 6666
 ```
-DO NOT CONTINUE TO NEXT STEP UNTIL it asks for login/username  
-Enter `pi` for login and `raspberry` for password
+DO NOT CONTINUE TO NEXT STEP UNTIL `virt-customize` configure `raspbian` image. (which is showing `Setting up mosquitto` line and starting service)
 
 ### Connect to esp32 serial output on port 5555
-After entering login/password on new terminal run:
+After install complete on new terminal run:
 ```
-$ cd esp-mqtt-tcp
+EASY WAY:
+$ nc localhost 5555
+OR HARD WAY:
+$ cd examples/mqtt/esp32/
 $ idf.py build
 $ idf.py monitor -p socket://localhost:5555
 ```
