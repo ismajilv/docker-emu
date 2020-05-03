@@ -1,12 +1,13 @@
 
 # docker-emu
-This docker image runs QEMU system emulation for Raspbian Stretch Lite and ESP32. [build](./build) folder contains necessary scripts to configure emulator.  
+This docker image runs QEMU system emulation for Raspbian Stretch Lite and ESP32. [raspberry](./raspberry) and [esp32](./esp32) folders containd Dockerfiles.  
 
 Use [examples](./examples) folder for given examples and more info. 
 
 Pre-requirements:
 - [esp-idf](https://github.com/espressif/esp-idf) with release/v4.2
 - [ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+- [docker-compose](https://docs.docker.com/compose/install/)
 
 ## Instruction
 
@@ -16,32 +17,34 @@ $ git clone https://github.com/ismajilv/docker-emu/ -b mqtt
 $ cd docker-emu 
 ```
 
-### Build docker (do not forget . at the end)
-Will download/resize/enable ssh in `raspbian` qcow2 image and setup `ESP32` emulator
+### Copy `flash_image.bin` file to [mount](./mount) folder
+We will use [mqtt](./examples/mqtt) example. Please read [esp32 README](./examples/mqtt/esp32/README.md) and [MQTT README](./examples/mqtt/README.md).
+
+Copy `flash_image.bin` file to [mount](./mount) folder from the `esp32` folder of [mqtt example](./examples/mqtt/esp32). This folder will be mounted to `esp32` service on startup and `esp32` will use this file to load emulator
 ```
-$ docker build -t docker-emu:mqtt .
+$ cp ./examples/mqtt/esp32/flash_image.bin ./mount
 ```
 
-### Start docker with [examples](./examples) folder mounted
-Choose example [examples](./examples) you wish, i.e [mqtt](./examples/mqtt), then start docker. 
+### Build via docker-compose
+This builds, (re)creates, starts, and attaches containers for `esp32` and `raspberry pi` services 
 - `5555` - for esp32 serial output
 - `6666` - for raspberry pi serial output 
 ```
-$ docker run -it -v $(pwd)/examples/mqtt:/root/mount -p 2222:2222 -p 5555:5555 -p 6666:6666 --privileged ismajilv/docker-emu:mqtt
+$ docker-compose up
 ```
+
+### Run ansible setup.yml file in `raspberry` folder
+Setup `raspbian` image. This ansible script waits for image being reachable and setups image (in case of [mqtt](./examples/mqtt) installs mosquitto)
+```
+$ cd ansible/ 
+$ ansible-playbook -i inventory/hosts ../examples/mqtt/raspberry/setup.yml
+ ```
 
 ### Connect to raspberry pi serial output on port 6666
 on new terminal run:
 ```
 $ nc localhost 6666
 ```
-
-### Run ansible setup yml file
-It waits for `raspbian` being reachable and setups image (which in case of [mqtt](./examples/mqtt) installs mosquitto)
-```
-$ cd ansible/ 
-$ ansible-playbook -i inventory/hosts ../examples/mqtt/raspberry/setup.yml
- ```
 
 ### Connect to esp32 serial output on port 5555
 Wait `ansible` setup to be completed and then on new terminal run:
@@ -53,7 +56,7 @@ $ cd examples/mqtt/esp32/
 $ idf.py build
 $ idf.py monitor -p socket://localhost:5555
 ```
-and will see output similar to this:
+Now `mosquitto` client is connected to `raspberry pi` that sends/recieve message and will see output similar to this:
 ```
 Executing action: monitor
 Running idf_monitor in directory /home/ismajilv/Documents/iot/code/git/docker-emu/esp-mqtt-tcp

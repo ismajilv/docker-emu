@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  raspberry-service:
+    build: ./raspberry
+    ports:
+      - 2222:2222
+      - 6666:6666
+
+
+  esp32:
+    build: ./esp32
+    ports:
+      - 5555:5555
+    volumes:
+      - ./mount/:/root/mount
+    depends_on:
+      - raspberry-service

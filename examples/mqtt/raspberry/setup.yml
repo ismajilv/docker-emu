@@ -3,10 +3,10 @@
 - name: Setup raspberry pi
   hosts: pi
   tasks:
-    - name: Wait 200 seconds for raspberry pi to boot, but only start checking after 30 seconds
+    - name: Wait 150 seconds for raspberry pi to boot, but only start checking after 10 seconds
       wait_for_connection:
-        delay: 30
-        timeout: 300
+        delay: 10
+        timeout: 150
         
     - name: Install mosquitto
       become: yes
