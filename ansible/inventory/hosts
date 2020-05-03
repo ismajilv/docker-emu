@@ -1,0 +1,7 @@
+[all:vars]
+ansible_user=pi
+ansible_ssh_pass=raspberry
+ansible_ssh_extra_args='-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
+
+[pi]
+localhost:2222

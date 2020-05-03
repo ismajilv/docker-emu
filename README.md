@@ -2,12 +2,11 @@
 # docker-emu
 This docker image runs QEMU system emulation for Raspbian Stretch Lite and ESP32. [build](./build) folder contains necessary scripts to configure emulator.  
 
-[virt-customize](http://libguestfs.org/virt-customize.1.html) is used to configure `raspbian` image before docker run.
-
 Use [examples](./examples) folder for given examples and more info. 
 
 Pre-requirements:
 - [esp-idf](https://github.com/espressif/esp-idf) with release/v4.2
+- [ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 
 ## Instruction
 
@@ -18,17 +17,17 @@ $ cd docker-emu
 ```
 
 ### Build docker (do not forget . at the end)
-Will download/resize/enable ssh in `raspbian` qcow2 image and download esp32 `flash_image.bin` file
+Will download/resize/enable ssh in `raspbian` qcow2 image and setup `ESP32` emulator
 ```
 $ docker build -t docker-emu:mqtt .
 ```
 
 ### Start docker with [examples](./examples) folder mounted
-Choose example [examples](./examples) you wish, as an example [mqtt](./examples/mqtt), then start docker. Wait it initiate start until it asks for connection on port.  
+Choose example [examples](./examples) you wish, i.e [mqtt](./examples/mqtt), then start docker. 
 - `5555` - for esp32 serial output
 - `6666` - for raspberry pi serial output 
 ```
-$ sudo docker run -it -v $(pwd)/examples/mqtt:/root/mount -p 2222:2222 -p 5555:5555 -p 6666:6666 --privileged ismajilv/docker-emu:mqtt
+$ docker run -it -v $(pwd)/examples/mqtt:/root/mount -p 2222:2222 -p 5555:5555 -p 6666:6666 --privileged ismajilv/docker-emu:mqtt
 ```
 
 ### Connect to raspberry pi serial output on port 6666
@@ -36,10 +35,16 @@ on new terminal run:
 ```
 $ nc localhost 6666
 ```
-DO NOT CONTINUE TO NEXT STEP UNTIL `virt-customize` configure `raspbian` image. (which is showing `Setting up mosquitto` line and starting service)
+
+### Run ansible setup yml file
+It waits for `raspbian` being reachable and setups image (which in case of [mqtt](./examples/mqtt) installs mosquitto)
+```
+$ cd ansible/ 
+$ ansible-playbook -i inventory/hosts ../examples/mqtt/raspberry/setup.yml
+ ```
 
 ### Connect to esp32 serial output on port 5555
-After install complete on new terminal run:
+Wait `ansible` setup to be completed and then on new terminal run:
 ```
 EASY WAY:
 $ nc localhost 5555
