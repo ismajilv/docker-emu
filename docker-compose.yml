@@ -4,14 +4,15 @@ services:
   raspberry-service:
     build: ./raspberry
     ports:
-      - 2222:2222
-      - 6666:6666
+      - "2222:2222"
+      - "8000:8000"
 
 
   esp32:
     build: ./esp32
     ports:
-      - 5555:5555
+      - "5555:5555"
+      - "3333:3333"
     volumes:
       - ./mount/:/root/mount
     depends_on:

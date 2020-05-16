@@ -12,3 +12,14 @@
       become: yes
       apt:
         name: mosquitto
+
+    - name: Update mosquitto configuration file to listen on port 8000
+      become: yes
+      blockinfile:
+        path: /etc/mosquitto/mosquitto.conf
+        block: |
+          listener 8000
+
+    - name: Restart mosquitto service
+      become: yes
+      shell: "/etc/init.d/mosquitto restart"

@@ -1,0 +1,39 @@
+Collecting gdbgui
+  Downloading gdbgui-0.13.2.0-py3-none-any.whl (878 kB)
+Collecting Pygments<3.0,>=2.2.0
+  Downloading Pygments-2.6.1-py3-none-any.whl (914 kB)
+Collecting Flask-SocketIO<3.0,>=2.9
+  Using cached Flask_SocketIO-2.9.6-py2.py3-none-any.whl (16 kB)
+Collecting pygdbmi<1.0,>=0.9.0.0
+  Using cached pygdbmi-0.9.0.3-py3-none-any.whl (16 kB)
+Collecting Flask-Compress<2.0,>=1.4.0
+  Using cached Flask-Compress-1.5.0.tar.gz (6.5 kB)
+Collecting gevent<2.0,>=1.2.2
+  Downloading gevent-1.5.0-cp36-cp36m-manylinux2010_x86_64.whl (5.1 MB)
+Collecting Flask<1.0,>=0.12.2
+  Using cached Flask-0.12.5-py2.py3-none-any.whl (81 kB)
+Collecting python-socketio>=1.6.1
+  Using cached python_socketio-4.5.1-py2.py3-none-any.whl (51 kB)
+Collecting brotli
+  Downloading Brotli-1.0.7-cp36-cp36m-manylinux1_x86_64.whl (352 kB)
+Collecting greenlet>=0.4.14; platform_python_implementation == "CPython"
+  Downloading greenlet-0.4.15-cp36-cp36m-manylinux1_x86_64.whl (41 kB)
+Requirement already satisfied: click>=2.0 in /home/ismajilv/.platformio/penv/lib/python3.6/site-packages (from Flask<1.0,>=0.12.2->gdbgui) (7.1.1)
+Collecting itsdangerous>=0.21
+  Using cached itsdangerous-1.1.0-py2.py3-none-any.whl (16 kB)
+Collecting Jinja2>=2.4
+  Using cached Jinja2-2.11.2-py2.py3-none-any.whl (125 kB)
+Collecting Werkzeug<1.0,>=0.7
+  Using cached Werkzeug-0.16.1-py2.py3-none-any.whl (327 kB)
+Requirement already satisfied: six>=1.9.0 in /home/ismajilv/.platformio/penv/lib/python3.6/site-packages (from python-socketio>=1.6.1->Flask-SocketIO<3.0,>=2.9->gdbgui) (1.14.0)
+Collecting python-engineio>=3.9.0
+  Using cached python_engineio-3.12.1-py2.py3-none-any.whl (49 kB)
+Collecting MarkupSafe>=0.23
+  Downloading MarkupSafe-1.1.1-cp36-cp36m-manylinux1_x86_64.whl (27 kB)
+Building wheels for collected packages: Flask-Compress
+  Building wheel for Flask-Compress (setup.py): started
+  Building wheel for Flask-Compress (setup.py): finished with status 'done'
+  Created wheel for Flask-Compress: filename=Flask_Compress-1.5.0-py3-none-any.whl size=5269 sha256=bb98218d1a9479d123662f58b4e68d8541b3e45f525849ee600a90380ee44fb2
+  Stored in directory: /home/ismajilv/.cache/pip/wheels/16/2c/19/f840d605a062246c5569086df3694f5d1123f7f3f3a1c82f72
+Successfully built Flask-Compress
+Installing collected packages: Pygments, itsdangerous, MarkupSafe, Jinja2, Werkzeug, Flask, python-engineio, python-socketio, Flask-SocketIO, pygdbmi, brotli, Flask-Compress, greenlet, gevent, gdbgui

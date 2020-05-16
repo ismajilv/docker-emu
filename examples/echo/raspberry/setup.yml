@@ -1,0 +1,33 @@
+---
+
+- name: Setup raspberry pi
+  hosts: pi
+  tasks:
+    - name: Wait 150 seconds for raspberry pi to boot, but only start checking after 10 seconds
+      wait_for_connection:
+        delay: 10
+        timeout: 150
+
+    - name: Install python3-pip and gunicorn3
+      apt:
+        name:
+          - python3-pip
+          - gunicorn3
+        update_cache: yes
+        autoclean: yes
+        state: present
+      become: True
+        
+    - name: Pip3 install falcon
+      pip: 
+        name: falcon
+        executable: /usr/bin/pip3
+      become: True
+
+    - name: Copy server.py into remote
+      copy:
+        src: ./server.py
+        dest: /home/pi
+
+    - name: Start server with gunicorn3
+      shell: "cd /home/pi; nohup gunicorn3 -b 0.0.0.0:8000 server:app </dev/null >/dev/null 2>&1 &"
