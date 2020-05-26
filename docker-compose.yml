@@ -16,5 +16,7 @@ services:
       - "1234:1234"
     volumes:
       - ./mount/:/root/mount
+    environment:
+      GDB: ${GDB}
     depends_on:
       - raspberry-service

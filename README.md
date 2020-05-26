@@ -15,6 +15,7 @@ Pre-requirements:
 - `$ idf.py monitor -p socket://localhost:5555` or just `$ nc localhost 5555` is used to monitor ESP32 serial output
 - [img_build.sh](./examples/echo/esp32/img_build.sh) helper script is used to recreate a flash image, combining the bootloader, partition table, and the application
 - start with one of the [examples](./examples)
+- to attach GDB on port 1234, modify [.env](./.env) file
 
 ## SSH
 

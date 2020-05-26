@@ -5,6 +5,8 @@ Starts a FreeRTOS task to print "Hello World" and also demonstrate usage of GDB 
 ESP32
  - Connect GDB to target on remote port 1234
 
+Update [.env](../../.env) with GDB=TRUE to have GDB attach on startup.
+
 How to run:
 ```
 in root directory 
