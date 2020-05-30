@@ -10,49 +10,15 @@ Update [.env](../../.env) with GDB=TRUE to have GDB attach on startup.
 How to run:
 ```
 in root directory 
-$ sudo docker-compose build
+$ sudo docker-compose up
 $ cd ./examples/hello_gdb/esp32
 $ idf.py build
-$ ./img_build.sh hello_world.bin
+$ ./img_build.sh hello-world.bin
 $ cp flash_image.bin ../../../mount/
-$ cd ../../../ansible
-EASY WAY
-$ nc localhost 5555
-OR HARD WAY
-$ cd ./examples/hello_gdb/esp32/
+$ docker-compose up
 $ idf.py monitor -p socket://localhost:5555
 ```
-Now the serial output will be forwarded to connected socket and is ready to attach GDB (raspberry pi will start along). To attach GDB, run:
-```
-xtensa-esp32-elf-gdb build/hello-world.elf -ex "target remote :1234" -ex "monitor system_reset" -ex "tb app_main" -ex "c"
-
-GNU gdb (crosstool-NG esp-2020r1) 8.1.0.20180627-git
-Copyright (C) 2018 Free Software Foundation, Inc.
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
-and "show warranty" for details.
-This GDB was configured as "--host=x86_64-build_pc-linux-gnu --target=xtensa-esp32-elf".
-Type "show configuration" for configuration details.
-For bug reporting instructions, please see:
-<http://www.gnu.org/software/gdb/bugs/>.
-Find the GDB manual and other documentation resources online at:
-<http://www.gnu.org/software/gdb/documentation/>.
-For help, type "help".
-Type "apropos word" to search for commands related to "word"...
-Reading symbols from build/hello-world.elf...done.
-Remote debugging using :1234
-0x40000400 in ?? ()
-(gdb) b app_main
-Breakpoint 1 at 0x400d2a2c: file ../main/hello_world_main.c, line 17.
-(gdb) c
-Continuing.
-
-Thread 1 hit Breakpoint 1, app_main () at ../main/hello_world_main.c:17
-17      {
-```
-
-You should see the output on connected socket to port 5555:
+You should see the output on idf.py monitor:
 ```
 rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
 configsip: 0, SPIWP:0xee
@@ -122,3 +88,47 @@ Restarting in 1 seconds...
 Restarting in 0 seconds...
 Restarting now.
 ```
+
+And then connect with GDB, in new terminal windows insiede docker-emu/examples/hello_gdb/esp32/ folder:
+```
+$ xtensa-esp32-elf-gdb build/hello-world.elf -ex "target remote :1234" -ex "monitor system_reset" -ex "tb app_main" -ex "c"
+GNU gdb (crosstool-NG esp-2020r1) 8.1.0.20180627-git
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "--host=x86_64-build_pc-linux-gnu --target=xtensa-esp32-elf".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from build/hello-world.elf...done.
+Remote debugging using :1234
+0x400e2bca in esp_pm_impl_waiti () at /home/ismajilv/esp/esp-idf/esp-idf-4.2/components/esp32/pm_esp32.c:484
+484         asm("waiti 0");
+Temporary breakpoint 1 at 0x400d2a2c: file ../main/hello_world_main.c, line 17.
+Continuing.
+
+Thread 1 hit Temporary breakpoint 1, app_main () at ../main/hello_world_main.c:17
+17      {
+
+AND TERMINAL OUTPUT WILL BE
+ (178748) heap_init: Initializing. RAM available for dynamic allocation:
+I (178754) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM
+I (178756) heap_init: At 3FFB2A20 len 0002D5E0 (181 KiB): DRAM
+I (178759) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM
+I (178762) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM
+I (178792) heap_init: At 40089D54 len 000162AC (88 KiB): IRAM
+I (178798) cpu_start: Pro cpu start user code
+I (23865) spi_flash: detected chip: gd
+I (23870) spi_flash: flash io: dio
+W (23886) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.
+I (23887) cpu_start: Starting scheduler on PRO CPU.
+I (0) cpu_start: Starting scheduler on APP CPU.
+```
+
+In GDB press `c` to continue and idf.py monitor output will be updated accordingly

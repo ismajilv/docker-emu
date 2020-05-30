@@ -13,21 +13,23 @@ Raspberry Pi
 How to run:
 ```
 in root directory 
-$ sudo docker-compose build
+$ sudo docker-compose up
 $ cd ./examples/echo/esp32
 $ idf.py build
 $ ./img_build.sh tcp_server.bin
 $ cp flash_image.bin ../../../mount/
 $ cd ../../../ansible
-$ ansible-playbook -i inventory/hosts ../examples/echo/raspberry/setup.yml
-EASY WAY
-$ nc localhost 5555
-OR HARD WAY
-$ cd ./examples/echo/esp32/
+$ ansible-playbook -i inventory/hosts ../examples/echo/raspberry/setup.yml // TAKES TIME
+$ cd ../examples/echo/esp32/
 $ idf.py monitor -p socket://localhost:5555
 ```
 Now you should see this output:
 ```
+Executing action: monitor
+Running idf_monitor in directory /home/ismajilv/Documents/iot/code/git/docker-emu/examples/echo/esp32
+Executing "/home/ismajilv/.espressif/python_env/idf4.2_py3.6_env/bin/python /home/ismajilv/esp/esp-idf/esp-idf-4.2/tools/idf_monitor.py -p socket://localhost:5555 -b 115200 --toolchain-prefix xtensa-esp32-elf- /home/ismajilv/Documents/iot/code/git/docker-emu/examples/echo/esp32/build/tcp_server.elf -m '/home/ismajilv/.espressif/python_env/idf4.2_py3.6_env/bin/python' '/home/ismajilv/esp/esp-idf/esp-idf-4.2/tools/idf.py'"...
+--- idf_monitor on socket://localhost:5555 115200 ---
+--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H ---
 ets Jun  8 2016 00:22:57
 
 rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
@@ -39,72 +41,79 @@ load:0x3fff0034,len:7200
 ho 0 tail 12 room 4
 load:0x40078000,len:13696
 load:0x40080400,len:4000
+0x40080400: _init at ??:?
+
 entry 0x40080688
-I (157) boot: ESP-IDF v4.2-dev-1303-gcd4fa46f5 2nd stage bootloader
-I (161) boot: compile time 21:04:29
-I (166) boot: chip revision: 0
-I (170) boot.esp32: SPI Speed      : 40MHz
-I (172) boot.esp32: SPI Mode       : DIO
-I (172) boot.esp32: SPI Flash Size : 2MB
-I (179) boot: Enabling RNG early entropy source...
-I (187) boot: Partition Table:
-I (188) boot: ## Label            Usage          Type ST Offset   Length
-I (188) boot:  0 nvs              WiFi data        01 02 00009000 00006000
-I (190) boot:  1 phy_init         RF data          01 01 0000f000 00001000
-I (191) boot:  2 factory          factory app      00 00 00010000 00100000
-I (197) boot: End of partition table
-I (202) esp_image: segment 0: paddr=0x00010020 vaddr=0x3f400020 size=0x17a00 ( 96768) map
-I (269) esp_image: segment 1: paddr=0x00027a28 vaddr=0x3ffb0000 size=0x022c0 (  8896) load
-I (284) esp_image: segment 2: paddr=0x00029cf0 vaddr=0x40080000 size=0x00404 (  1028) load
-I (299) esp_image: segment 3: paddr=0x0002a0fc vaddr=0x40080404 size=0x05f1c ( 24348) load
-I (332) esp_image: segment 4: paddr=0x00030020 vaddr=0x400d0020 size=0x5bab4 (375476) map
-I (549) esp_image: segment 5: paddr=0x0008badc vaddr=0x40086320 size=0x04ce4 ( 19684) load
-I (599) boot: Loaded app from partition at offset 0x10000
-I (600) boot: Disabling RNG early entropy source...
-I (607) cpu_start: Pro cpu up.
-I (608) cpu_start: Application information:
-I (608) cpu_start: Project name:     tcp_server
-I (609) cpu_start: App version:      091a1e4-dirty
-I (609) cpu_start: Compile time:     May 13 2020 23:02:48
-I (610) cpu_start: ELF file SHA256:  d23b425172c23f33...
-I (611) cpu_start: ESP-IDF:          v4.2-dev-1303-gcd4fa46f5
-I (612) cpu_start: Starting app cpu, entry point is 0x400814cc
-I (3318) cpu_start: App cpu up.
-I (3816) heap_init: Initializing. RAM available for dynamic allocation:
-I (3824) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM
-I (3829) heap_init: At 3FFB3CE8 len 0002C318 (176 KiB): DRAM
-I (3832) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM
-I (3836) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM
-I (3841) heap_init: At 4008B004 len 00014FFC (83 KiB): IRAM
-I (3851) cpu_start: Pro cpu start user code
-I (1241) spi_flash: detected chip: gd
-I (1253) spi_flash: flash io: dio
-W (1257) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.
-I (1259) cpu_start: Starting scheduler on PRO CPU.
-I (0) cpu_start: Starting scheduler on APP CPU.
-I (1470) system_api: Base MAC address is not set
-I (1480) system_api: read default base MAC address from EFUSE
-I (1490) esp_eth.netif.glue: 00:00:00:00:00:03
-I (1490) esp_eth.netif.glue: ethernet attached to netif
-I (1500) example_connect: Waiting for IP
-I (4470) esp_netif_handlers: eth ip: 10.0.2.15, mask: 255.255.255.0, gw: 10.0.2.2
-I (4470) example_connect: Got IP event!
-I (4480) example_connect: Connected to Ethernet
-I (4480) example_connect: IPv4 address: 10.0.2.15
-I (4490) example: Socket created
-I (4490) example: Socket bound, port 3333
-I (4490) example: Socket listening
+I (205) boot: ESP-IDF v4.2-dev-1303-gcd4fa46f5 2nd stage bootloader
+I (214) boot: compile time 12:59:51
+I (221) boot: chip revision: 0
+I (224) boot.esp32: SPI Speed      : 40MHz
+I (228) boot.esp32: SPI Mode       : DIO
+I (228) boot.esp32: SPI Flash Size : 2MB
+I (238) boot: Enabling RNG early entropy source...
+I (244) boot: Partition Table:
+I (246) boot: ## Label            Usage          Type ST Offset   Length
+I (247) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (255) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (265) boot:  2 factory          factory app      00 00 00010000 00100000
+I (271) boot: End of partition table
+I (276) esp_image: segment 0: paddr=0x00010020 vaddr=0x3f400020 size=0x17a00 ( 96768) map
+I (343) esp_image: segment 1: paddr=0x00027a28 vaddr=0x3ffb0000 size=0x022c0 (  8896) load
+I (361) esp_image: segment 2: paddr=0x00029cf0 vaddr=0x40080000 size=0x00404 (  1028) load
+0x40080000: _WindowOverflow4 at /home/ismajilv/esp/esp-idf/esp-idf-4.2/components/freertos/xtensa/xtensa_vectors.S:1730
 
-WHEN CONNECTED TO SOCKET ON PORT 3333
+I (376) esp_image: segment 3: paddr=0x0002a0fc vaddr=0x40080404 size=0x05f1c ( 24348) load
+I (423) esp_image: segment 4: paddr=0x00030020 vaddr=0x400d0020 size=0x5bab4 (375476) map
+0x400d0020: _stext at ??:?
 
-I (4466) example: Socket created
-I (4476) example: Socket bound, port 3333
-I (4476) example: Socket listening
-I (11686) example: Socket accepted ip address: 172.18.0.1
+I (653) esp_image: segment 5: paddr=0x0008badc vaddr=0x40086320 size=0x04ce4 ( 19684) load
+0x40086320: spi_flash_ll_set_addr_bitlen at /home/ismajilv/esp/esp-idf/esp-idf-4.2/components/soc/src/esp32/include/hal/spi_flash_ll.h:345
+ (inlined by) spi_flash_hal_configure_host_io_mode at /home/ismajilv/esp/esp-idf/esp-idf-4.2/components/soc/src/hal/spi_flash_hal_common.inc:81
 
-on new terminal:
+I (702) boot: Loaded app from partition at offset 0x10000
+I (704) boot: Disabling RNG early entropy source...
+I (711) cpu_start: Pro cpu up.
+I (711) cpu_start: Application information:
+I (712) cpu_start: Project name:     tcp_server
+I (716) cpu_start: App version:      0765bba-dirty
+I (717) cpu_start: Compile time:     May 30 2020 12:59:32
+I (719) cpu_start: ELF file SHA256:  6c79dd8df45af2c8...
+I (719) cpu_start: ESP-IDF:          v4.2-dev-1303-gcd4fa46f5
+I (720) cpu_start: Starting app cpu, entry point is 0x400814cc
+0x400814cc: call_start_cpu1 at /home/ismajilv/esp/esp-idf/esp-idf-4.2/components/esp32/cpu_start.c:286
+
+I (3856) cpu_start: App cpu up.
+I (4527) heap_init: Initializing. RAM available for dynamic allocation:
+I (4538) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM
+I (4543) heap_init: At 3FFB3CE8 len 0002C318 (176 KiB): DRAM
+I (4546) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM
+I (4549) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM
+I (4552) heap_init: At 4008B004 len 00014FFC (83 KiB): IRAM
+I (4621) cpu_start: Pro cpu start user code
+I (1499) spi_flash: detected chip: gd
+I (1511) spi_flash: flash io: dio
+W (1516) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.
+I (1517) cpu_start: Starting scheduler on PRO CPU.
+I (10) cpu_start: Starting scheduler on APP CPU.
+I (1727) system_api: Base MAC address is not set
+I (1727) system_api: read default base MAC address from EFUSE
+I (1747) esp_eth.netif.glue: 00:00:00:00:00:03
+I (1747) esp_eth.netif.glue: ethernet attached to netif
+I (1757) example_connect: Waiting for IP
+I (4727) esp_netif_handlers: eth ip: 10.0.2.15, mask: 255.255.255.0, gw: 10.0.2.2
+I (4727) example_connect: Got IP event!
+I (4737) example_connect: Connected to Ethernet
+I (4737) example_connect: IPv4 address: 10.0.2.15
+I (4747) example: Socket created
+I (4767) example: Socket bound, port 3333
+I (4777) example: Socket listening
+
+ON NEW TERMINAL:
 $ nc localhost 3333
 HI FROM ESP 32 (press enter)
+
+WHEN CONNECTED TO SOCKET ON PORT 3333, idf.py monitor output will be updated:
+I (11686) example: Socket accepted ip address: 172.18.0.1
 
 on browser enter http://localhost:8000/data and response is:
 {"input data from ESP32": "['HI FROM ESP 32']"}

@@ -16,6 +16,7 @@ Pre-requirements:
 - [img_build.sh](./examples/echo/esp32/img_build.sh) helper script is used to recreate a flash image, combining the bootloader, partition table, and the application
 - start with one of the [examples](./examples)
 - to attach GDB on port 1234, modify [.env](./.env) file
+- adviced to build docker-compose from scratch if not working with `--no-cache` option
 
 ## SSH
 

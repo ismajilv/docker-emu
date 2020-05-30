@@ -2,3 +2,4 @@
 
 - [echo](./echo) | `user -> input -> esp32 -> raspberry pi -> user`
 - [mqtt](./mqtt) | `mqtt client in esp32 connected to broker in raspberry pi`
+- [hello_gdb](./hello_gdb) | `simple hello world demonstration with use case of GDB`
