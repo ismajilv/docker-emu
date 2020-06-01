@@ -12,11 +12,11 @@ Pre-requirements:
 ## Some info
 - [mount](./mount) is mounted to ESP32 container on startup. It is used to store `flash_image.bin` file in container so that ESP32 emulation can use it on startup. 
 - [ansible](./ansible) is used to setup Raspberry Pi for different services. It contains `config` file and `inventory` folder 
-- `$ idf.py monitor -p socket://localhost:5555` or just `$ nc localhost 5555` is used to monitor ESP32 serial output
+- `$ idf.py monitor -p socket://localhost:5555` or just `$ nc localhost 5555` is used to monitor ESP32 serial output. Either only `idf.py monitor` or `flash` can be supported, otherwise need to restart qemu with different arguments
 - [img_build.sh](./examples/echo/esp32/img_build.sh) helper script is used to recreate a flash image, combining the bootloader, partition table, and the application
 - start with one of the [examples](./examples)
-- to attach GDB on port 1234, modify [.env](./.env) file
-- adviced to build docker-compose from scratch if not working with `--no-cache` option
+- attach GDB on port 1234
+- service on raspberry pi can only listen on port `8000`, so if you run multiple examples, service will fail
 
 ## SSH
 
