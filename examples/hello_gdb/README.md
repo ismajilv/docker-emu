@@ -7,14 +7,10 @@ ESP32
 
 How to run:
 ```
-in root directory 
-$ sudo docker-compose up
-$ cd ./examples/hello_gdb/esp32
-$ idf.py build
-$ ./img_build.sh hello-world.bin
-$ cp flash_image.bin ../../../mount/
-$ docker-compose up
-$ idf.py monitor -p socket://localhost:5555
+Inisde /esp32 folder
+$ emu start
+$ emu flash
+$ emu monitor
 ```
 You should see the output on idf.py monitor:
 ```

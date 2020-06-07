@@ -7,11 +7,21 @@
       wait_for_connection:
         delay: 10
         timeout: 150
-        
-    - name: Install mosquitto
-      become: yes
+
+    - name: Install mosquitto and lsof
       apt:
-        name: mosquitto
+        name:
+          - mosquitto
+          - lsof
+        update_cache: yes
+        autoclean: yes
+        state: present
+      become: True
+
+    - name: Kill previous process running on port 8000, if exists
+      become: yes
+      shell: "pkill -9 $(lsof -t -i:8000)"
+      ignore_errors: yes
 
     - name: Update mosquitto configuration file to listen on port 8000
       become: yes

@@ -12,16 +12,13 @@ Raspberry Pi
 
 How to run:
 ```
-in root directory 
-$ sudo docker-compose up
-$ cd ./examples/echo/esp32
-$ idf.py build
-$ ./img_build.sh tcp_server.bin
-$ cp flash_image.bin ../../../mount/
+Inisde /esp32 folder
+$ emu start
+$ emu flash
 $ cd ../../../ansible
 $ ansible-playbook -i inventory/hosts ../examples/echo/raspberry/setup.yml // TAKES TIME
 $ cd ../examples/echo/esp32/
-$ idf.py monitor -p socket://localhost:5555
+$ emu monitor
 ```
 Now you should see this output:
 ```
@@ -107,14 +104,21 @@ I (4737) example_connect: IPv4 address: 10.0.2.15
 I (4747) example: Socket created
 I (4767) example: Socket bound, port 3333
 I (4777) example: Socket listening
+```
 
-ON NEW TERMINAL:
+ON NEW TERMINAL: 
+```
 $ nc localhost 3333
+AND TYPE
 HI FROM ESP 32 (press enter)
+``` 
 
-WHEN CONNECTED TO SOCKET ON PORT 3333, idf.py monitor output will be updated:
+WHEN CONNECTED TO SOCKET ON PORT 3333, `emu monitor` output will be updated:
+```
 I (11686) example: Socket accepted ip address: 172.18.0.1
+```
 
-on browser enter http://localhost:8000/data and response is:
+on browser enter `http://localhost:8000/data` and response is:
+```json
 {"input data from ESP32": "['HI FROM ESP 32']"}
 ```

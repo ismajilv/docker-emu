@@ -5,23 +5,21 @@ This docker image runs QEMU system emulation for Raspbian Stretch Lite and ESP32
 Use [examples](./examples) folder for given examples and more info. 
 
 Pre-requirements:
-- [esp-idf](https://github.com/espressif/esp-idf) with release/v4.2
-- [ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
-- [docker-compose](https://docs.docker.com/compose/install/)
+- [install and setup esp-idf with release/v4.2](https://github.com/espressif/esp-idf) 
+- [install ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+- [install docker-compose](https://docs.docker.com/compose/install/)
+- [setup cli_interface](./cli_interface)
+
+## Examples
+- Start with one of the [examples](./examples), follow instructions
 
 ## Some info
-- [mount](./mount) is mounted to ESP32 container on startup. It is used to store `flash_image.bin` file in container so that ESP32 emulation can use it on startup. 
 - [ansible](./ansible) is used to setup Raspberry Pi for different services. It contains `config` file and `inventory` folder 
-- `$ idf.py monitor -p socket://localhost:5555` or just `$ nc localhost 5555` is used to monitor ESP32 serial output. Either only `idf.py monitor` or `flash` can be supported, otherwise need to restart qemu with different arguments
-- [img_build.sh](./examples/echo/esp32/img_build.sh) helper script is used to recreate a flash image, combining the bootloader, partition table, and the application
-- start with one of the [examples](./examples)
-- attach GDB on port 1234
-- service on raspberry pi can only listen on port `8000`, so if you run multiple examples, service will fail
+- adviced to build docker-compose from scratch if not working with `--no-cache` option
 
 ## SSH
 
 SSH is enabled on port `2222`. The username is `pi` and the password is `raspberry`. 
+To connect with SSH, run:
 
-To connect with SSH:
-
-`ssh -p 2222 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no pi@localhost`
+`$ emu ssh`
