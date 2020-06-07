@@ -8,11 +8,12 @@
         delay: 10
         timeout: 150
 
-    - name: Install python3-pip and gunicorn3
+    - name: Install python3-pip, gunicorn3 and lsof
       apt:
         name:
           - python3-pip
           - gunicorn3
+          - lsof
         update_cache: yes
         autoclean: yes
         state: present
@@ -23,6 +24,11 @@
         name: falcon
         executable: /usr/bin/pip3
       become: True
+
+    - name: Kill previous process running on port 8000, if exists
+      become: yes
+      shell: "pkill -9 $(lsof -t -i:8000)"
+      ignore_errors: yes
 
     - name: Copy server.py into remote
       copy:

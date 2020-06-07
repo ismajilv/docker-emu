@@ -10,16 +10,13 @@ Raspberry Pi
 
 How to run:
 ```
-in root directory 
-$ sudo docker-compose up
-$ cd ./examples/mqtt/esp32
-$ idf.py build
-$ ./img_build.sh mqtt_tcp.bin
-$ cp flash_image.bin ../../../mount/
+Inisde /esp32 folder
+$ emu start
+$ emu flash
 $ cd ../../../ansible
 $ ansible-playbook -i inventory/hosts ../examples/mqtt/raspberry/setup.yml
 $ cd ../examples/mqtt/esp32/
-$ idf.py monitor -p socket://localhost:5555
+$ emu monitor
 ```
 
 Now you should see this output
