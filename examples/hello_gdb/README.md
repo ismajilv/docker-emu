@@ -7,7 +7,7 @@ ESP32
 
 How to run:
 ```
-Inisde /esp32 folder
+Inisde examples/hello_gdb/esp32 folder
 $ emu start
 $ emu flash
 $ emu monitor
