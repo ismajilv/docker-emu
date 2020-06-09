@@ -7,12 +7,12 @@ ESP32
  - HTTP client POST 
 
 Raspberry Pi
- - Accets POST on server running on port 8000
+ - Accept POST on server running on port 8000
  - Keeps ESP32 input data in list
 
 How to run:
 ```
-Inisde /esp32 folder
+Inisde examples/echo/esp32 folder
 $ emu start
 $ emu flash
 $ cd ../../../ansible

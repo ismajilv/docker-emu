@@ -10,7 +10,7 @@ Raspberry Pi
 
 How to run:
 ```
-Inisde /esp32 folder
+Inisde examples/mqtt/esp32 folder
 $ emu start
 $ emu flash
 $ cd ../../../ansible
