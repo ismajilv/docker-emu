@@ -5,7 +5,7 @@ cli uses python's subprocess module, to manage containers with docker client. Th
 cli without sudo privilege, `emu` will ask for `sudo` password. So it is preferable, to add your `$USER` to `docker` group. 
 Please have a look [here](https://docs.docker.com/engine/install/linux-postinstall/) to add your `$USER` to `docker` group.
 
-You could get some dependencies missing warning when running emu cli, it's due to `espressif` environment is not activated or wasn't installed properly. 
+Please use `python3` to setup emu cli and note that you could get some dependencies missing warning when running emu cli, it's due to `espressif` environment is not activated or wasn't installed properly. 
 
 Install with:
 ```
