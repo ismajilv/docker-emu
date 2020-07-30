@@ -83,7 +83,7 @@ Restarting in 0 seconds...
 Restarting now.
 ```
 
-And then connect with GDB, in new terminal windows insiede docker-emu/examples/hello_gdb/esp32/ folder:
+And then connect in new terminal with GDB while `emu monitor` is running, in new terminal windows insiede docker-emu/examples/hello_gdb/esp32/ folder:
 ```
 $ xtensa-esp32-elf-gdb build/hello-world.elf -ex "target remote :1234" -ex "monitor system_reset" -ex "tb app_main" -ex "c"
 GNU gdb (crosstool-NG esp-2020r1) 8.1.0.20180627-git

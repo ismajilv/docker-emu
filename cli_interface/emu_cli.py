@@ -113,6 +113,20 @@ def monitor():
     subprocess.run(["idf.py", "monitor", "-p", "socket://localhost:5555"])
 
 
+@cli.command(help="See raspberry pi gpio state")
+def rgpio():
+    raspberry_pi_id = get_device_id("raspberry_pi")
+    subprocess.run(
+        [
+            "sudo",
+            "docker",
+            "exec",
+            "-t",
+            raspberry_pi_id,
+            "/usr/local/bin/detect_gpio_changes",
+        ],
+    )
+
 @cli.command(help="SSH into raspbian")
 def ssh():
     subprocess.run(["ssh", "-p", "2222", "-o", "UserKnownHostsFile=/dev/null", "-o", "StrictHostKeyChecking=no", "pi@localhost"])

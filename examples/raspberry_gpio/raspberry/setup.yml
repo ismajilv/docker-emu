@@ -1,0 +1,25 @@
+---
+
+- name: Setup raspberry pi
+  hosts: pi
+  tasks:
+    - name: Copy loop.c into remote
+      copy:
+        src: ./loop.c
+        dest: /home/pi
+
+    - name: Build wiringPi library
+      shell:
+        cmd: ./build
+        chdir: /home/pi/wiringEmuPi
+
+    - name: Compile loop app
+      shell:
+        cmd: gcc loop.c -o loop -l wiringPi 
+        chdir: /home/pi
+
+    - name: Run loop app
+      shell:
+        cmd: ./loop
+        chdir: /home/pi
+      become: yes
