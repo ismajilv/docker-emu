@@ -26,6 +26,7 @@ Commands:
   log      ['esp32', 'raspberry_pi'] log one of the device logs
   monitor  Same as idf.py monitor
   restart  Restart IoT lab environment
+  rgpio    See raspberry pi gpio state
   ssh      SSH into raspbian
   start    Start IoT lab environment
   stop     Stop IoT lab environment
