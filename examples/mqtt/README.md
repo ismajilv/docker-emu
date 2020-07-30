@@ -14,7 +14,7 @@ Inisde examples/mqtt/esp32 folder
 $ emu start
 $ emu flash
 $ cd ../../../ansible
-$ ansible-playbook -i inventory/hosts ../examples/mqtt/raspberry/setup.yml
+$ ansible-playbook -i inventory/hosts ../examples/mqtt/raspberry/setup.yml (can output some warnings, but should continue)
 $ cd ../examples/mqtt/esp32/
 $ emu monitor
 ```

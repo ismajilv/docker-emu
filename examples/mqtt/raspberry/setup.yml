@@ -3,11 +3,6 @@
 - name: Setup raspberry pi
   hosts: pi
   tasks:
-    - name: Wait 150 seconds for raspberry pi to boot, but only start checking after 10 seconds
-      wait_for_connection:
-        delay: 10
-        timeout: 150
-
     - name: Install mosquitto and lsof
       apt:
         name:
@@ -21,7 +16,7 @@
     - name: Kill previous process running on port 8000, if exists
       become: yes
       shell: "pkill -9 $(lsof -t -i:8000)"
-      ignore_errors: yes
+      ignore_errors: True
 
     - name: Update mosquitto configuration file to listen on port 8000
       become: yes
