@@ -11,8 +11,8 @@ How to run:
 Inisde examples/raspberry_gpip/raspberry folder
 $ emu start
 $ emu rgpio # In separate terminal to see gpio outputs
-$ cd ../../../ansible
-$ ansible-playbook -i inventory/hosts ../examples/raspberry_gpio/raspberry/setup.yml
+$ cd ../raspberry
+$ ansible-playbook -i ../../../ansible/inventory/hosts setup.yml
 ```
 With `emu rgpio` you should see this output:
 ```

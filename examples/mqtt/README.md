@@ -13,9 +13,9 @@ How to run:
 Inisde examples/mqtt/esp32 folder
 $ emu start
 $ emu flash
-$ cd ../../../ansible
-$ ansible-playbook -i inventory/hosts ../examples/mqtt/raspberry/setup.yml (can output some warnings, but should continue)
-$ cd ../examples/mqtt/esp32/
+$ cd ../raspberry
+$ ansible-playbook -i ../../../ansible/inventory/hosts setup.yml // may output some warnings, but should continue
+$ cd ../esp32/
 $ emu monitor
 ```
 

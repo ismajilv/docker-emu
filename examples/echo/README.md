@@ -15,9 +15,9 @@ How to run:
 Inisde examples/echo/esp32 folder
 $ emu start
 $ emu flash
-$ cd ../../../ansible
-$ ansible-playbook -i inventory/hosts ../examples/echo/raspberry/setup.yml // TAKES TIME
-$ cd ../examples/echo/esp32/
+$ cd ../raspberry
+$ ansible-playbook -i ../../../ansible/inventory/hosts setup.yml // TAKES TIME
+$ cd ../esp32/
 $ emu monitor
 ```
 Now you should see this output:
