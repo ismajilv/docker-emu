@@ -12,12 +12,15 @@ def cli():
 
 @cli.command(help="Start IoT lab environment")
 def start():
+    subprocess.Popen(
+            ["sudo", "docker-compose", "up"], stdin=PIPE, stdout=DEVNULL, stderr=STDOUT
+        )
+    click.echo("Starting IoT Lab, please wait!")
+    time.sleep(15)
+        
     esp32_id = get_device_id("esp32")
     raspberry_pi_id = get_device_id("raspberry_pi")
     if esp32_id and raspberry_pi_id:
-        subprocess.Popen(
-            ["sudo", "docker-compose", "up"], stdin=PIPE, stdout=DEVNULL, stderr=STDOUT
-        )
         click.echo("IoT lab started. ESP32 and Raspberry Pi are running!")
     elif esp32_id:
         click.echo("ESP32 started, but not Raspberry Pi!")
@@ -38,7 +41,13 @@ def stop():
     subprocess.run(
         ["sudo", "docker", "rm", "-f", raspberry_pi_id], stdout=DEVNULL, stderr=STDOUT,
     )
-    click.echo("IoT lab environment stopped!")
+
+    esp32_id = get_device_id("esp32")
+    raspberry_pi_id = get_device_id("raspberry_pi")
+
+    if not raspberry_pi_id and not esp32_id:
+        click.echo("IoT Lab stopped!")
+    
 
 
 @cli.command(help="Restart IoT lab environment")

@@ -9,6 +9,7 @@ Please use `python3` to setup emu cli and note that you could get some dependenc
 
 Install with:
 ```
+$ pip3 install -r requirements.txt
 $ python3 -m pip install --editable .
 ```
 ## Usage of CLI

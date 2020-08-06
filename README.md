@@ -3,11 +3,13 @@
 This docker image runs QEMU system emulation for Raspbian Stretch Lite and ESP32. [raspberry](./raspberry) and [esp32](./esp32) folders contain respective Dockerfiles for emulation and system is built with docker-compose.  
 
 ## Setup guide:
-- First of all build with: `sudo docker-compose build` in the root directory then setup all the required packages versions below:
+- Install [git](https://git-scm.com/downloads) and [git lfs](https://git-lfs.github.com/)
+- Clone with `git clone https://github.com/ismajilv/docker-emu/`
+- Build with: `sudo docker-compose build` in the root directory then setup all the required packages versions below:
   - [install and setup esp-idf with release/v4.2](https://github.com/espressif/esp-idf/tree/release/v4.2) (choose `stable version` in Getting Started Guides for ESP-IDF next to ESP32 chip) `v4.2`
   - [install ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) `>= 2.7`
-  - [install docker/docker-compose](https://docs.docker.com/compose/install/) `>= 19.*`
-  - [setup cli_interface](./cli_interface)
+  - install [docker](https://docs.docker.com/engine/install/) `>= 19.*`  and [docker-compose](https://docs.docker.com/compose/install/) `>= 1.25.*`
+  - [setup cli_interface with `click` version 7.21 described in requirements.txt](./cli_interface)
 
 ## Examples
 - Start with one of the [examples](./examples), follow instructions
