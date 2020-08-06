@@ -13,11 +13,11 @@ def cli():
 @cli.command(help="Start IoT lab environment")
 def start():
     subprocess.Popen(
-            ["sudo", "docker-compose", "up"], stdin=PIPE, stdout=DEVNULL, stderr=STDOUT
-        )
+        ["sudo", "docker-compose", "up"], stdin=PIPE, stdout=DEVNULL, stderr=STDOUT
+    )
     click.echo("Starting IoT Lab, please wait!")
     time.sleep(15)
-        
+
     esp32_id = get_device_id("esp32")
     raspberry_pi_id = get_device_id("raspberry_pi")
     if esp32_id and raspberry_pi_id:
@@ -42,12 +42,7 @@ def stop():
         ["sudo", "docker", "rm", "-f", raspberry_pi_id], stdout=DEVNULL, stderr=STDOUT,
     )
 
-    esp32_id = get_device_id("esp32")
-    raspberry_pi_id = get_device_id("raspberry_pi")
-
-    if not raspberry_pi_id and not esp32_id:
-        click.echo("IoT Lab stopped!")
-    
+    click.echo("IoT Lab stopped!")
 
 
 @cli.command(help="Restart IoT lab environment")
@@ -64,7 +59,6 @@ def log(device):
         device_id = get_device_id(device)
         subprocess.run(["sudo", "docker", "logs", device_id])
     else:
-
         click.echo("Please provide one of [esp32, raspberry_pi]")
 
 
@@ -145,6 +139,18 @@ def rgpio():
         ],
     )
 
+
 @cli.command(help="SSH into raspbian")
 def ssh():
-    subprocess.run(["ssh", "-p", "2222", "-o", "UserKnownHostsFile=/dev/null", "-o", "StrictHostKeyChecking=no", "pi@localhost"])
+    subprocess.run(
+        [
+            "ssh",
+            "-p",
+            "2222",
+            "-o",
+            "UserKnownHostsFile=/dev/null",
+            "-o",
+            "StrictHostKeyChecking=no",
+            "pi@localhost",
+        ]
+    )
