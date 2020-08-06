@@ -13,5 +13,11 @@ wget -O $RPI_QEMU_KERNEL $RASPBIAN_QEMU_KERNEL_URL/$RPI_QEMU_KERNEL_COMMIT/$RPI_
 
 
 # unzip
-unzip 2016-05-27-raspbian-jessie-lite.img.zip
+if unzip 2016-05-27-raspbian-jessie-lite.img.zip ; then
+   echo "Jessie lite image unzipped"
+else
+   printf "\n\nPlease install git lfs or make sure 2016-05-27-raspbian-jessie-lite.img.zip file is downloaded in ./raspberry/image/ folder\n\n"
+   exit 1
+fi
+
 rm 2016-05-27-raspbian-jessie-lite.img.zip
