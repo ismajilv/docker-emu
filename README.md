@@ -10,6 +10,7 @@ This docker image runs QEMU system emulation for Raspbian Stretch Lite and ESP32
   - [install ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) `>= 2.7`
   - install [docker](https://docs.docker.com/engine/install/) `>= 19.*`  and [docker-compose](https://docs.docker.com/compose/install/) `>= 1.25.*`
   - [setup cli_interface with `click` version 7.21 described in requirements.txt](./cli_interface)
+  - install [sshpass](https://gist.github.com/arunoda/7790979)
 
 ## Examples
 - Start with one of the [examples](./examples), follow instructions
