@@ -1,7 +1,17 @@
 from contextlib import contextmanager
 from types import SimpleNamespace
 from unittest import TestCase
-from emu_cli import start, stop, restart, log, flash, monitor, rgpio, ssh
+from cli_interface.emu_cli import (
+    start,
+    stop,
+    restart,
+    log,
+    flash,
+    monitor,
+    rgpio,
+    ssh,
+    esocket,
+)
 from unittest.mock import patch
 from click.testing import CliRunner
 
@@ -19,7 +29,8 @@ class Test(TestCase):
                     mock_run.return_value = SimpleNamespace(
                         stdout=SimpleNamespace(
                             decode=lambda: SimpleNamespace(
-                                strip=lambda: run_return_value
+                                strip=lambda: run_return_value,
+                                split=lambda x: ["0.0.0.0", "0000"],
                             )
                         )
                     )
@@ -35,12 +46,16 @@ class Test(TestCase):
 
         # then
         mock_popen.assert_called_once_with(
-            ["sudo", "docker-compose", "up"], stderr=-2, stdin=-1, stdout=-3
+            ["sudo", "docker-compose", "up", "--scale", "esp32=1"],
+            stderr=-2,
+            stdin=-1,
+            stdout=-3,
         )
         self.assertEqual(result.exit_code, 0)
         self.assertIn("Starting IoT Lab, please wait!", result.output)
         self.assertIn(
-            "IoT lab started. ESP32 and Raspberry Pi are running!", result.output
+            "IoT lab started. 1 instance of ESP32 and 1 instance of Raspberry Pi are running!",
+            result.output,
         )
 
     def test_emu_starts_log_failure_message(self):
@@ -52,21 +67,25 @@ class Test(TestCase):
 
         # then
         mock_popen.assert_called_once_with(
-            ["sudo", "docker-compose", "up"], stderr=-2, stdin=-1, stdout=-3
+            ["sudo", "docker-compose", "up", "--scale", "esp32=1"],
+            stderr=-2,
+            stdin=-1,
+            stdout=-3,
         )
         self.assertEqual(result.exit_code, 0)
         self.assertIn("IoT lab couldn't be started!", result.output)
 
     def test_emu_stop_logs_stop_message(self):
         # given
-        with self.mock_subprocess(run_return_value=None) as (_, mock_run):
+        any_id = 1
+        with self.mock_subprocess(run_return_value=any) as (_, mock_run):
 
             # when
             result = self.runner.invoke(stop)
 
         # then
         mock_run.assert_called_with(
-            ["sudo", "docker", "rm", "-f", None], stderr=-2, stdout=-3
+            ["sudo", "docker-compose", "down"], stderr=-2,
         )
         self.assertEqual(result.exit_code, 0)
         self.assertIn("IoT Lab stopped!", result.output)
@@ -81,7 +100,8 @@ class Test(TestCase):
         # then
         self.assertEqual(result.exit_code, 0)
         self.assertIn(
-            "IoT lab started. ESP32 and Raspberry Pi are running!", result.output
+            "IoT lab started. 1 instance of ESP32 and 1 instance of Raspberry Pi are running!",
+            result.output,
         )
         self.assertIn("Starting IoT Lab, please wait!", result.output)
         self.assertIn("IoT Lab stopped!", result.output)
@@ -95,7 +115,7 @@ class Test(TestCase):
         ):
 
             # when
-            result = self.runner.invoke(log, ["esp32"])
+            result = self.runner.invoke(log, ["esp32", "--id", "1"])
 
         # then
         self.assertEqual(result.exit_code, 0)
@@ -110,7 +130,7 @@ class Test(TestCase):
         ):
 
             # when
-            result = self.runner.invoke(log, ["esp32"])
+            result = self.runner.invoke(log, ["raspberry_pi"])
 
         # then
         self.assertEqual(result.exit_code, 0)
@@ -118,19 +138,18 @@ class Test(TestCase):
 
     def test_emu_flash_success(self):
         # given
-        given_raspberry_pi_id = 1
-        with self.mock_subprocess(run_return_value=given_raspberry_pi_id) as (
+        with self.mock_subprocess(run_return_value=1) as (
             mock_popen,
             mock_run,
         ):
 
             # when
-            result = self.runner.invoke(flash)
+            result = self.runner.invoke(flash, ["--id", "1"])
 
         # then
         self.assertEqual(result.exit_code, 0)
         mock_run.assert_called_with(
-            ["idf.py", "flash", "-p", "socket://localhost:5555"]
+            ["idf.py", "flash", "-p", "socket://localhost:0000"]
         )
 
     def test_emu_flash_with_strapping_mode_set_to_0x0f(self):
@@ -142,7 +161,7 @@ class Test(TestCase):
         ):
 
             # when
-            result = self.runner.invoke(flash)
+            result = self.runner.invoke(flash, ["--id", "1"])
 
         # then
         self.assertEqual(result.exit_code, 0)
@@ -156,12 +175,12 @@ class Test(TestCase):
             mock_run,
         ):
             # when
-            result = self.runner.invoke(monitor)
+            result = self.runner.invoke(monitor, ["--id", "1"])
 
         # then
         self.assertEqual(result.exit_code, 0)
         mock_run.assert_called_with(
-            ["idf.py", "monitor", "-p", "socket://localhost:5555"]
+            ["idf.py", "monitor", "-p", "socket://localhost:0000"]
         )
 
     def test_emu_monitor_with_strapping_mode_set_to_0x02(self):
@@ -172,7 +191,7 @@ class Test(TestCase):
             _,
         ):
             # when
-            result = self.runner.invoke(monitor)
+            result = self.runner.invoke(monitor, ["--id", "1"])
 
         # then
         self.assertEqual(result.exit_code, 0)
@@ -218,3 +237,17 @@ class Test(TestCase):
                 "pi@localhost",
             ]
         )
+
+    def test_emu_esocket_success(self):
+        # given
+        given_raspberry_pi_id = 1
+        with self.mock_subprocess(run_return_value=given_raspberry_pi_id) as (
+            _,
+            mock_run,
+        ):
+            # when
+            result = self.runner.invoke(esocket, ["--id", "1"])
+
+        # then
+        self.assertEqual(result.exit_code, 0)
+        mock_run.assert_called_with(["nc", "localhost", "0000"])

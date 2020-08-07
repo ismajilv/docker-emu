@@ -8,9 +8,9 @@ ESP32
 How to run:
 ```
 Inisde examples/hello_gdb/esp32 folder
-$ emu start
-$ emu flash
-$ emu monitor
+$ emu start   # Starts 1 instance of Raspberry Pi and 1 instance of ESP32
+$ emu flash --id 1
+$ emu monitor --id 1
 ```
 You should see the output on idf.py monitor:
 ```
@@ -83,9 +83,10 @@ Restarting in 0 seconds...
 Restarting now.
 ```
 
-And then connect in new terminal with GDB while `emu monitor` is running, in new terminal windows insiede docker-emu/examples/hello_gdb/esp32/ folder:
+And then open new terminal insiede docker-emu/examples/hello_gdb/esp32/ while emu monitor is running and run:
 ```
-$ xtensa-esp32-elf-gdb build/hello-world.elf -ex "target remote :1234" -ex "monitor system_reset" -ex "tb app_main" -ex "c"
+$ emu eport --id 1     # Get the GDB port and update in below command
+$ xtensa-esp32-elf-gdb build/hello-world.elf -ex "target remote :{GDB_PORT}" -ex "monitor system_reset" -ex "tb app_main" -ex "c"
 GNU gdb (crosstool-NG esp-2020r1) 8.1.0.20180627-git
 Copyright (C) 2018 Free Software Foundation, Inc.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>

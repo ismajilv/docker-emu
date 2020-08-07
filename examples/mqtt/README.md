@@ -11,12 +11,12 @@ Raspberry Pi
 How to run:
 ```
 Inisde examples/mqtt/esp32 folder
-$ emu start
-$ emu flash
+$ emu start             # Start 1 instance of Raspberry Pi and 1 instance of ESP32
+$ emu flash --id 1      # Flash into ESP32 device with id 1
 $ cd ../raspberry
 $ ansible-playbook -i ../../../ansible/inventory/hosts setup.yml // may output some warnings, but should continue
 $ cd ../esp32/
-$ emu monitor
+$ emu monitor --id 1
 ```
 
 Now you should see this output

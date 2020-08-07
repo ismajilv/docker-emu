@@ -2,7 +2,7 @@ import click
 import time
 import subprocess
 from subprocess import PIPE, STDOUT, DEVNULL
-from helper import get_device_id
+import helper as hp
 
 
 @click.group()
@@ -10,39 +10,44 @@ def cli():
     pass
 
 
-@cli.command(help="Start IoT lab environment")
-def start():
+@cli.command(help="Start IoT lab environment, option: --scale-esp32 n")
+@click.option("--scale-esp32", default=1)
+def start(scale_esp32):
     subprocess.Popen(
-        ["sudo", "docker-compose", "up"], stdin=PIPE, stdout=DEVNULL, stderr=STDOUT
+        [
+            "sudo",
+            "docker-compose",
+            "up",
+            "--scale",
+            "esp32={}".format(str(scale_esp32)),
+        ],
+        stdin=PIPE,
+        stdout=DEVNULL,
+        stderr=STDOUT,
     )
     click.echo("Starting IoT Lab, please wait!")
     time.sleep(15)
 
-    esp32_id = get_device_id("esp32")
-    raspberry_pi_id = get_device_id("raspberry_pi")
-    if esp32_id and raspberry_pi_id:
-        click.echo("IoT lab started. ESP32 and Raspberry Pi are running!")
-    elif esp32_id:
-        click.echo("ESP32 started, but not Raspberry Pi!")
-    elif raspberry_pi_id:
-        click.echo("Raspberry Pi started, but not ESP32!")
+    raspberry_pi_id = hp.get_raspberry_pi_device_id()
+    if raspberry_pi_id:
+        click.echo(
+            "IoT lab started. 1 instance of ESP32 and {} instance of Raspberry Pi are running!".format(
+                scale_esp32
+            )
+        )
     else:
         click.echo("IoT lab couldn't be started!")
 
 
 @cli.command(help="Stop IoT lab environment")
 def stop():
-    esp32_id = get_device_id("esp32")
-    subprocess.run(
-        ["sudo", "docker", "rm", "-f", esp32_id], stdout=DEVNULL, stderr=STDOUT,
-    )
+    raspberry_pi_id = hp.get_raspberry_pi_device_id()
+    if raspberry_pi_id:
+        subprocess.run(["sudo", "docker-compose", "down"], stderr=STDOUT)
 
-    raspberry_pi_id = get_device_id("raspberry_pi")
-    subprocess.run(
-        ["sudo", "docker", "rm", "-f", raspberry_pi_id], stdout=DEVNULL, stderr=STDOUT,
-    )
-
-    click.echo("IoT Lab stopped!")
+        click.echo("IoT Lab stopped!")
+    else:
+        click.echo("IoT Lab is not running!")
 
 
 @cli.command(help="Restart IoT lab environment")
@@ -52,25 +57,37 @@ def restart(context):
     context.invoke(start)
 
 
-@cli.command(help="['esp32', 'raspberry_pi'] log one of the device logs")
+@cli.command(help="['esp32 --id [1 to n]', 'raspberry_pi'] device logs")
 @click.argument("device")
-def log(device):
-    if device in ["esp32", "raspberry_pi"]:
-        device_id = get_device_id(device)
+@click.option("--id")
+def log(device, id):
+    if device == "raspberry_pi":
+        device_id = hp.get_raspberry_pi_device_id()
         subprocess.run(["sudo", "docker", "logs", device_id])
+    elif device == "esp32":
+        if id:
+            device_id = hp.get_esp32_device_id(id)
+            subprocess.run(["sudo", "docker", "logs", device_id])
+        else:
+            click.echo("Provide ESP32 device id")
     else:
         click.echo("Please provide one of [esp32, raspberry_pi]")
 
 
-@cli.command(help="Same as idf.py flash")
-def flash():
-    esp32_id = get_device_id("esp32")
+@cli.command(help="Same as idf.py flash, option: --id n")
+@click.option("--id")
+def flash(id):
+    device_id = hp.get_esp32_device_id(id)
+    device_port = hp.get_esp32_port(id, type="flash")
+    if not device_port:
+        click.echo("No ESP32 device found with id {}".format(id))
+        return
     subprocess.run(
         [
             "sudo",
             "docker",
             "exec",
-            esp32_id,
+            device_id,
             "bash",
             "-c",
             "pkill -f qemu-system-xtensa",
@@ -83,7 +100,7 @@ def flash():
             "sudo",
             "docker",
             "exec",
-            esp32_id,
+            device_id,
             "bash",
             "-c",
             "./qemu-system-xtensa/qemu-system-xtensa -nographic -machine esp32 -drive file=flash_image.bin,if=mtd,format=raw -global driver=esp32.gpio,property=strap_mode,value=0x0f -echr 0x02 -serial tcp::5555,server -nic user,model=open_eth,id=lo0,hostfwd=tcp::3333-:3333 -gdb tcp::1234",
@@ -91,19 +108,26 @@ def flash():
         stdout=DEVNULL,
         stderr=STDOUT,
     )
-    subprocess.run(["idf.py", "flash", "-p", "socket://localhost:5555"])
-    print("Flashed successfully!")
+    subprocess.run(
+        ["idf.py", "flash", "-p", "socket://localhost:{}".format(device_port)]
+    )
 
 
-@cli.command(help="Same as idf.py monitor")
-def monitor():
-    esp32_id = get_device_id("esp32")
+@cli.command(help="Same as idf.py monitor, option: --id n")
+@click.option("--id")
+def monitor(id):
+    device_id = hp.get_esp32_device_id(id)
+    device_port = hp.get_esp32_port(id, type="monitor")
+
+    if not device_port:
+        click.echo("No ESP32 device found with id {}".format(id))
+        return
     subprocess.run(
         [
             "sudo",
             "docker",
             "exec",
-            esp32_id,
+            device_id,
             "bash",
             "-c",
             "killall qemu-system-xtensa",
@@ -114,7 +138,7 @@ def monitor():
             "sudo",
             "docker",
             "exec",
-            esp32_id,
+            device_id,
             "bash",
             "-c",
             "./qemu-system-xtensa/qemu-system-xtensa -nographic -machine esp32 -drive file=flash_image.bin,if=mtd,format=raw -echr 0x02 -serial tcp::5555,server -nic user,model=open_eth,id=lo0,hostfwd=tcp::3333-:3333 -gdb tcp::1234",
@@ -122,19 +146,24 @@ def monitor():
         stdout=DEVNULL,
         stderr=STDOUT,
     )
-    subprocess.run(["idf.py", "monitor", "-p", "socket://localhost:5555"])
+    subprocess.run(
+        ["idf.py", "monitor", "-p", "socket://localhost:{}".format(device_port)]
+    )
 
 
 @cli.command(help="See raspberry pi gpio state")
 def rgpio():
-    raspberry_pi_id = get_device_id("raspberry_pi")
+    device_id = hp.get_raspberry_pi_device_id()
+    if not device_id:
+        click.echo("No Raspberry Pi device found")
+        return
     subprocess.run(
         [
             "sudo",
             "docker",
             "exec",
             "-t",
-            raspberry_pi_id,
+            device_id,
             "/usr/local/bin/detect_gpio_changes",
         ],
     )
@@ -154,3 +183,24 @@ def ssh():
             "pi@localhost",
         ]
     )
+
+
+@cli.command(help="Get port information of ESP32, option: --id n")
+@click.option("--id")
+def eport(id):
+    flash_or_monitor_port = hp.get_esp32_port(id, type="flash")
+    socket_port = hp.get_esp32_port(id, type="socket")
+    gdb_port = hp.get_esp32_port(id, type="gdb")
+
+    click.echo("flash or monitor port: {}".format(flash_or_monitor_port))
+    click.echo("socket port: {}".format(socket_port))
+    click.echo("GDB port: {}".format(gdb_port))
+
+
+@cli.command(help="Connect to socket port of ESP32, option: --id n")
+@click.option("--id")
+def esocket(id):
+    socket_port = hp.get_esp32_port(id, type="socket")
+    if not socket_port:
+        click.echo("ESP32 socket port counldn't be found")
+    subprocess.run(["nc", "localhost", socket_port])

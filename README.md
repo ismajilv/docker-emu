@@ -1,6 +1,6 @@
 
 # docker-emu
-This docker image runs QEMU system emulation for Raspbian Stretch Lite and ESP32. [raspberry](./raspberry) and [esp32](./esp32) folders contain respective Dockerfiles for emulation and system is built with docker-compose.  
+This docker image runs QEMU system emulation for Raspbian Stretch Lite and ESP32 with scalability. [raspberry](./raspberry) and [esp32](./esp32) folders contain respective Dockerfiles for emulation and system is built with docker-compose.  
 
 ## Setup guide:
 - Install [git](https://git-scm.com/downloads) and [git lfs](https://git-lfs.github.com/)
