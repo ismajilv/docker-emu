@@ -9,8 +9,8 @@ Raspberry Pi
 How to run:
 ```
 Inisde examples/raspberry_gpip/raspberry folder
-$ emu start
-$ emu rgpio # In separate terminal to see gpio outputs
+$ emu start     # Starts 1 instance of Raspberry Pi and 1 instance of ESP32
+$ emu rgpio     # In separate terminal to see gpio outputs
 $ cd ../raspberry
 $ ansible-playbook -i ../../../ansible/inventory/hosts setup.yml
 ```

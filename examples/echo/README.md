@@ -13,14 +13,16 @@ Raspberry Pi
 How to run:
 ```
 Inisde examples/echo/esp32 folder
-$ emu start
-$ emu flash
+$ emu start --scale-esp32 2     # Run 2 instances of ESP32 and 1 instance of Raspberry Pi
+$ emu flash --id 1              # Flash to ESP32 device with id 1
+$ emu flash --id 2              # Flash to ESP32 device with id 2
 $ cd ../raspberry
 $ ansible-playbook -i ../../../ansible/inventory/hosts setup.yml // TAKES TIME
 $ cd ../esp32/
-$ emu monitor
+$ emu monitor --id 1            # Monitor ESP32 device with id 1
+$ emu monitor --id 2            # Monitor ESP32 device with id 2
 ```
-Now you should see this output:
+Now you should see this output for both ESP32 devices:
 ```
 Executing action: monitor
 Running idf_monitor in directory /home/ismajilv/Documents/iot/code/git/docker-emu/examples/echo/esp32
@@ -108,17 +110,23 @@ I (4777) example: Socket listening
 
 ON NEW TERMINAL: 
 ```
-$ nc localhost 3333
+$ emu eport --id 1  
 AND TYPE
-HI FROM ESP 32 (press enter)
+HI FROM ESP32 DEVICE NUMBER 1 (press enter)
 ``` 
 
-WHEN CONNECTED TO SOCKET ON PORT 3333, `emu monitor` output will be updated:
+ON NEW TERMINAL: 
+$ emu eport --id 2 
+AND TYPE
+HI FROM ESP32 DEVICE NUMBER 2 (press enter)
+``` 
+
+WHEN CONNECTED TO SOCKET ON PORT 3333, emu monitor output will be updated for both ESP32 devices:
 ```
 I (11686) example: Socket accepted ip address: 172.18.0.1
 ```
 
 on browser enter `http://localhost:8000/data` and response is:
 ```json
-{"input data from ESP32": "['HI FROM ESP 32']"}
+{"input data from ESP32": "['HI FROM ESP 32 DEVICE NUMBER 1', 'HI FROM ESP 32 DEVICE NUMBER 2']"}
 ```

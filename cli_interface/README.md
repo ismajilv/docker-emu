@@ -23,12 +23,14 @@ Options:
   --help  Show this message and exit.
 
 Commands:
-  flash    Same as idf.py flash
-  log      ['esp32', 'raspberry_pi'] log one of the device logs
-  monitor  Same as idf.py monitor
+  eport    Get port information of ESP32, option: --id n
+  esocket  Connect to socket port of ESP32, option: --id n
+  flash    Same as idf.py flash, option: --id n
+  log      ['esp32 --id [1 to n]', 'raspberry_pi'] device logs
+  monitor  Same as idf.py monitor, option: --id n
   restart  Restart IoT lab environment
   rgpio    See raspberry pi gpio state
   ssh      SSH into raspbian
-  start    Start IoT lab environment
+  start    Start IoT lab environment, option: --scale-esp32 n
   stop     Stop IoT lab environment
 ```
